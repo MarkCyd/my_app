@@ -1,39 +1,40 @@
 <x-layout>
-    <h1 class="title">Register a New Account</h1>
-    <div class="mx-auto max-w-screen-sm card">
-            {{-- username --}}
-        <form action="{{ route('register') }}" method="post">
-           @csrf
+    <div class="mx-auto max-w-screen-sm card bg-gray-200 p-10 rounded-lg mt-4">
+        <h1 class="title">Register a New Account</h1>
 
-           <label for="fname">First Name</label>
-           <input type="text" id="fname" name="fname" class="test">
+        {{-- username --}}
+        <form action="{{ route('register') }}" method="post">
+            @csrf
             <div class="mb-4">
-                <label for="username">UserName</label>
-                <input class="border-2 border-rose-500" type="text" name="username">
+                <label for="username">User Name</label>
+                <input class="input  @error('username')redborder @enderror" value="{{ old('username')  }}" type="text"
+                    name="username">
                 @error('username')
-                    <p class="error"> {{ $message }}</p>
+                <p class="error"> {{ $message }}</p>
                 @enderror
-                </div>
+            </div>
             {{-- email --}}
             <div class="mb-4">
                 <label for="email">Email</label>
-                <input type="email" name="email" class="input-red">
+                <input type="text" name="email" value="{{ old('email') }}"
+                    class="input  @error('email')redborder @enderror">
                 @error('email')
                 <p class="error"> {{ $message }}</p>
                 @enderror
             </div>
-             {{-- password --}}
-             <div class="mb-4">
+            {{-- password --}}
+            <div class="mb-4">
                 <label for="password">Password</label>
-                <input type="password" name="password" class="input">
+                <input type="password" name="password" class="input  @error('password')redborder @enderror">
                 @error('password')
-                   <p class="error"> {{ $message }}</p>
+                <p class="error"> {{ $message }}</p>
                 @enderror
             </div>
             {{-- confirm password --}}
             <div class="mb-8">
                 <label for="password_confirmation">Confirm Password</label>
-                <input type="password" name="password_confirmation" class="input">
+                <input type="password" name="password_confirmation"
+                    class="input  @error('password')redborder @enderror">
                 @error('password_confirmation')
                 <p class="error"> {{ $message }}</p>
                 @enderror
