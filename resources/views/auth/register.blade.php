@@ -1,6 +1,6 @@
 <x-layout>
     <div class="mx-auto max-w-screen-sm card bg-gray-200 p-10 rounded-lg mt-4">
-        <h1 class="title">Register a New Account</h1>
+        <h1 class="text-3xl font-bold leading-9 text-slate-900 text-center mb-4">Register a New Account</h1>
 
         {{-- username --}}
         <form action="{{ route('register') }}" method="post">

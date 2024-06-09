@@ -2,16 +2,20 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\PostController;
 use Illuminate\Support\Facades\Route;
 
-Route::view('/', 'posts.index')->name('home');
+    //makes the home page
+    Route::redirect('/','posts');
+    /* resource */
+    Route::resource('posts', PostController::class);
 
 //group middleware for auth access just to be sure just put auth first then guest i might be a top down thing
 Route::middleware('auth')->group(function (){
     /* dashboard */
     Route::get('/dashboard',[DashboardController::class,'index'])->name('dashboard');
     /* logout */
-   Route::get('/logout',[AuthController::class,'logout'])->name('logout');
+    Route::get('/logout',[AuthController::class,'logout'])->name('logout');
     Route::post('/logout',[AuthController::class,'logout'])->name('logout');
 });
 //group middleware for guest access
