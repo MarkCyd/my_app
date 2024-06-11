@@ -7,9 +7,11 @@ use Illuminate\Support\Facades\Route;
 
     //makes the home page
     Route::redirect('/','posts');
+    
+    Route::get('/{user}/posts',[DashboardController::class,'userPosts'])->name('posts.user');
     /* resource */
     Route::resource('posts', PostController::class);
-
+    
 //group middleware for auth access just to be sure just put auth first then guest i might be a top down thing
 Route::middleware('auth')->group(function (){
     /* dashboard */

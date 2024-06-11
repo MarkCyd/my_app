@@ -5,12 +5,15 @@
         {{-- create post form --}}
         <div class="card mb-4 container mx-auto w-3/6">
             <h2 class="font-bold mb-4">Create New Post</h2>
+            
             {{-- session message --}}
             @if(session('success'))
-            <div>
-                <p class="text-green-600">{{ session('success') }}</p>
+            <div class="mb-2">
+                <x-flashMSG msg="{{ session('success') }}"/>{{-- just add a bg="any bg color you like in an if else statement to change bg colro" --}}
             </div>
+            
             @endif
+        
             <form action="{{ route('posts.store') }}" method="post">
                 @csrf
                 {{-- post title --}}
@@ -33,5 +36,14 @@
                 {{-- submit button --}}
                 <button class="btn">create</button>
             </form>
+       
+    </div>    
+        {{-- User post --}}
+        <h2 class="mb-4 container mx-auto w-3/6">Your Latest Post</h2>
+        <div class="grid-2-cols container mx-auto">
+            @foreach ($posts as $post)
+            <x-postCard :post="$post"/>  
+            @endforeach
         </div>
+        <div class="">{{ $posts->links() }}</div>
   </x-layout>
