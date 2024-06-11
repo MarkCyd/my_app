@@ -6,7 +6,7 @@ use App\Http\Controllers\PostController;
 use Illuminate\Support\Facades\Route;
 
     //makes the home page
-    Route::redirect('/','posts');
+    Route::redirect('/','posts')->name('index');
     
     Route::get('/{user}/posts',[DashboardController::class,'userPosts'])->name('posts.user');
     /* resource */

@@ -53,6 +53,6 @@ class AuthController extends Controller
         // regenerate new csrf token
         $request->session()->regenerateToken();
         //redirect to home
-        return redirect()->route('post');
+        return redirect()->route('index');
     }
 }

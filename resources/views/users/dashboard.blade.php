@@ -1,6 +1,6 @@
 <x-layout>
 
-        <h1 class="title text-center">Hello! {{ auth()->user()->username }} and welcome back</h1>
+        <h1 class="title text-center">Welcome {{ auth()->user()->username }} you have {{ $posts->total() }} posts</h1>
 
         {{-- create post form --}}
         <div class="card mb-4 container mx-auto w-3/6">
@@ -8,10 +8,13 @@
             
             {{-- session message --}}
             @if(session('success'))
-            <div class="mb-2">
+            <div >
                 <x-flashMSG msg="{{ session('success') }}"/>{{-- just add a bg="any bg color you like in an if else statement to change bg colro" --}}
             </div>
-            
+            @elseif(session('delete'))
+            <div >
+                <x-flashMSG msg="{{ session('delete') }}" bg="bg-red-500"/>{{-- just add a bg="any bg color you like in an if else statement to change bg colro" --}}
+            </div>
             @endif
         
             <form action="{{ route('posts.store') }}" method="post">
@@ -42,7 +45,14 @@
         <h2 class="mb-4 container mx-auto w-3/6">Your Latest Post</h2>
         <div class="grid-2-cols container mx-auto">
             @foreach ($posts as $post)
-            <x-postCard :post="$post"/>  
+            <x-postCard :post="$post"> 
+            {{-- delete button --}}
+               <form action="{{ route('posts.destroy',$post) }}" method="POST">
+                    @csrf
+                    @method('DELETE')
+                    <button class="bg-red-500 text-gray-100 px-2 py-1 text-xs rounded-md">Delete</button>
+               </form>
+            </x-postCard>  
             @endforeach
         </div>
         <div class="">{{ $posts->links() }}</div>

@@ -52,7 +52,7 @@ class PostController extends Controller
      */
     public function show(Post $post)
     {
-        //
+        return view('posts.show',['post'=>$post]);
     }
 
     /**
@@ -76,6 +76,9 @@ class PostController extends Controller
      */
     public function destroy(Post $post)
     {
-        //
+        /* delete post */
+      $post->delete();
+      /* redirect to dashboard */
+      return back()->with('delete','Post deleted successfully');
     }
 }
