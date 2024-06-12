@@ -46,6 +46,8 @@
         <div class="grid-2-cols container mx-auto">
             @foreach ($posts as $post)
             <x-postCard :post="$post"> 
+            {{-- update post --}}
+            <a href="{{ route('posts.edit',$post) }}" class="bg-green-500 text-gray-100 px-2 py-1 text-xs rounded-md">Update</a>
             {{-- delete button --}}
                <form action="{{ route('posts.destroy',$post) }}" method="POST">
                     @csrf
