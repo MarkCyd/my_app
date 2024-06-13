@@ -4,7 +4,7 @@
 <a href="{{ route('dashboard') }}">&larr; Back to the Dashboard</a>
 <p class="mb-4"></p>
 <h2 class="font-bold mb-2">Update Post</h2>    
-<form action="{{ route('posts.update', $post) }}" method="post" >
+<form action="{{ route('posts.update', $post) }}" method="post" enctype="multipart/form-data">
     @csrf
     @method('PUT')
      {{-- session message --}}
@@ -20,7 +20,7 @@
     {{-- post title --}}
     <div class="mb-4">
         <label for="title">Post Title</label>
-        <input type="text" name="title" value="{{ $post->title  }}"
+        <input type="text" name="title" value="{{ $post->title }}"
             class="input  @error('title')redborder @enderror">
         @error('title')
         <p class="error"> {{ $message }}</p>
@@ -34,6 +34,22 @@
         <p class="error"> {{ $message }}</p>
         @enderror
     </div>
+    {{-- current cover photo if it exist --}}
+     <div class=" rouded-md mb-4 w-1/4 object-cover">
+     @if ($post->image)
+        <label>Cover Photo</label>
+        <img src="{{ asset('storage/' . $post->image) }}" alt=""> {{-- show uploaded file path posible usage for download --}}
+     @endif
+    </div>
+   
+     {{-- post image --}}
+     <div class=" mb-4">
+        <label class="mt-4" for="image">Update Photo</label>
+        <input type="file" name="image" id="image">
+     </div>
+     @error('image')
+     <p class="error mb-4"> {{ $message }}</p>
+     @enderror
     {{-- submit button --}}
     <button class="btn">Update</button>
 </form>

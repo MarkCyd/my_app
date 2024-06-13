@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Routing\Controllers\Middleware;
 use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Support\Facades\Storage;
+
 //use App\Http\Requests\StorePostRequest;
 //use App\Http\Requests\UpdatePostRequest;
 
@@ -41,15 +43,28 @@ class PostController extends Controller Implements HasMiddleware //add implement
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
-    {
-        
+    {                                                                                  
        //validate
        $fields= $request->validate([
-        'title' => 'required','max:15',
-        'body' => 'required',
-       ]);
+        'title' => ['required','max:15'],
+        'body' => ['required'],
+        'image' => ['nullable', 'file','max:1000','mimes:png,jpeg,jpg,webp'],
+    ]);
+
+       /* store upload */
+        $path=null;
+       if($request->hasFile('image'))
+        {       //doing this need to run php artisan storage:link to make a link the only public area to the storage public area
+        $path = Storage::disk('public')->put('posts_images',$request->image);//saving to a public area everyone has access from disk functoin
+       // Storage::put('post_images',$request->image);//saving/uploding to a non public area of the app
+        }     
        //create
-       Auth::user()->posts()->create($fields); //ignore the red post and its an eloquent syntax
+      
+       Auth::user()->posts()->create([
+            'title' => $request->title,
+            'body' => $request->body,
+            'image' => $path,
+       ]); //ignore the red post and its an eloquent syntax
        //use this if has no relationship
        //Post::create(['user_id'=>Auth::id(),...$fields]);
 
@@ -69,7 +84,8 @@ class PostController extends Controller Implements HasMiddleware //add implement
      * Show the form for editing the specified resource.
      */
     public function edit(Post $post)
-    {                                                     //this will check if the user is equal to user_id
+    {     
+                                                       //this will check if the user is equal to user_id
         Gate::authorize('modify',$post); //modify is the class from postpolicy import gate facades
         return view('posts.edit',['post'=>$post]);
     }
@@ -79,21 +95,42 @@ class PostController extends Controller Implements HasMiddleware //add implement
      */
     public function update(Request $request, Post $post)
     {
-        //authorize user can only access the page
-        Gate::authorize('modify',$post);
-        //validate
-        $fields= $request->validate([
-            'title' => 'required','max:15',
+       // be sure to add enctype="multipart/form-data on form that need file handling or more
+        // Authorize user can only access the page
+        Gate::authorize('modify', $post);
+        
+        // Validate
+        $rules = [
+            'title' => 'required|max:15',
             'body' => 'required',
-           ]);
-           //update
-          $post->update($fields); //ignore the red post and its an eloquent syntax
-           //use this if has no relationship
-           //Post::create(['user_id'=>Auth::id(),...$fields]);
+            'image' => 'nullable|file|max:3000|mimes:png,jpg,webp'
+        ];
+        
+        $request->validate($rules);
+      
+        // Image handling
+       $path = $post->image ?? null;
+        if ($request->hasFile('image')) {
+            // Delete the old image if it exists
+            if($post->image)
+            {
+                Storage::disk('public')->delete($post->image);
+            }
+            // Store the new image */
+            $path = Storage::disk('public')->put('posts_images',$request->image);
+         } 
+     
+        // Update post
+        $post->update([
+            'title' => $request->title,
+            'body' => $request->body,
+            'image' => $path,
+        ]);
     
-           //redirect
-           return redirect(route('dashboard'))->with('success', 'Post is updated');
+        // Redirect
+        return redirect()->route('dashboard')->with('success', 'Post is updated');
     }
+    
 
     /**
      * Remove the specified resource from storage.
@@ -101,9 +138,14 @@ class PostController extends Controller Implements HasMiddleware //add implement
     public function destroy(Post $post)
     {
         Gate::authorize('modify',$post);
+        /* delete image if it exists*/
+        if($post->image)
+        {
+            Storage::disk('public')->delete($post->image);
+        }
         /* delete post */
-      $post->delete();
-      /* redirect to dashboard */
-      return back()->with('delete','Post deleted successfully');
+            $post->delete();
+        /* redirect to dashboard */
+        return back()->with('delete','Post deleted successfully');
     }
 }

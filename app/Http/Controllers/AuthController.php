@@ -23,10 +23,10 @@ class AuthController extends Controller
         //login use the request to login the new account
         Auth::login($request);
         //redirect
-        return redirect()->route('home');
+        return redirect()->route('index');
     }
     /* login code using email */
-    public function login(Request $request)
+    public function login(Request $request) 
     {
 
         //validate the data/request array

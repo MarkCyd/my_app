@@ -1,6 +1,15 @@
 @props(['post','full'=>false])
 <div class="card container  mx-auto mt-3">
-
+    {{-- show uploaded image  --}}
+    <div>
+    @if ($post->image)
+     
+        <img src="{{ asset('storage/' . $post->image) }}" alt=""> {{-- show uploaded file path posible usage for download --}}
+  
+     @else
+     <img src="{{ asset('storage/posts_images/default.jpg') }}" alt="">
+     @endif
+    </div>
     {{-- title --}}
     <h2 class="font-bold text-xl">{{ $post->title }}</h2>
     {{-- author and date --}}
