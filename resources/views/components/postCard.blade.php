@@ -1,7 +1,7 @@
 @props(['post','full'=>false])
-<div class="card container  mx-auto mt-3">
+<div class="flex px-4 min-h-44 items-center card container  mx-auto mt-3">
     {{-- show uploaded image  --}}
-    <div>
+    <div class=" w-40">
     @if ($post->image)
      
         <img src="{{ asset('storage/' . $post->image) }}" alt=""> {{-- show uploaded file path posible usage for download --}}
@@ -11,7 +11,7 @@
      @endif
     </div>
     {{-- title --}}
-    <h2 class="font-bold text-xl">{{ $post->title }}</h2>
+    <h2 class="font-bold text-xl px-2">{{ $post->title }}</h2>
     {{-- author and date --}}
     <div class="text-gray-600 mb-2">
         <span>Posted {{ $post->created_at->diffForHumans() }} by </span>
