@@ -2,12 +2,15 @@
 
 namespace App\Mail;
 
+use App\Models\Post;
+use App\Models\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Address;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Mail\Mailables\Envelope;
+use Illuminate\Mail\Mailables\Attachment;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
 class WelcomeMail extends Mailable
@@ -17,7 +20,7 @@ class WelcomeMail extends Mailable
     /**
      * Create a new message instance.
      */
-    public function __construct()
+    public function __construct(public User $user, public Post $post)
     {
         //
     }
@@ -51,6 +54,8 @@ class WelcomeMail extends Mailable
      */
     public function attachments(): array
     {
-        return [];
-    }
+        return [
+            Attachment::fromStorageDisk('public',$this->post->image),
+        ];//frompath manual way,fromStorage if you want to drive?
+    }//fromStorageDisk('public' , 'posts_images/ODFXGrJ2kAMb8z5ektSJNBUGw69MutmKNacJ68Hp.jpg') laravel public disk storage hardcoded path
 }

@@ -30,8 +30,7 @@ class PostController extends Controller Implements HasMiddleware //add implement
     public function index()
     {
 
-        Mail::to('mike@email.com')->send(new WelcomeMail());
-
+      
         $posts = Post::latest()->paginate(6);
         return view('posts.index', ['posts' => $posts]);
     }
@@ -65,13 +64,15 @@ class PostController extends Controller Implements HasMiddleware //add implement
         }     
        //create
       
-       Auth::user()->posts()->create([
+      $post= Auth::user()->posts()->create([
             'title' => $request->title,
             'body' => $request->body,
             'image' => $path,
        ]); //ignore the red post and its an eloquent syntax
        //use this if has no relationship
        //Post::create(['user_id'=>Auth::id(),...$fields]);
+       /* send new post mail */
+       Mail::to(Auth::user())->send(new WelcomeMail(Auth::user(),$post));
 
        //redirect
        return back()->with('success', 'Post is created');
