@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Mail\WelcomeMail;
 use App\Models\Post;
+use App\Mail\WelcomeMail;
 use Illuminate\Http\Request;
+use App\Events\UserSubscribed;
+
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Mail;
@@ -29,8 +31,7 @@ class PostController extends Controller Implements HasMiddleware //add implement
      */
     public function index()
     {
-
-      
+       
         $posts = Post::latest()->paginate(6);
         return view('posts.index', ['posts' => $posts]);
     }

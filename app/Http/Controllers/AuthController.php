@@ -30,7 +30,7 @@ class AuthController extends Controller
         event(new Registered($user));
 
         if ($request->subscribe) {
-          //  event(new UserSubscribed($user));
+            event(new UserSubscribed($user));
         }
 
         // Redirect
