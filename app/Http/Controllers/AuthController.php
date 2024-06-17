@@ -2,57 +2,95 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\UserSubscribed;
 use App\Models\User;
+use Illuminate\Auth\Events\Registered;
+use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
 {
-    /* register User */
+    // Register User
     public function register(Request $request)
     {
-        //validate data and pass it back to request
-        $request = $request->validate([
+        // Validate
+        $fields = $request->validate([
             'username' => ['required', 'max:255'],
-            'email' => ['required', 'max:255', 'email', 'unique:Users'],
+            'email' => ['required', 'max:255', 'email', 'unique:users'],
             'password' => ['required', 'min:3', 'confirmed']
         ]);
-        //Register using filtered request save that shit
-        $request = User::create($request);
 
-        //login use the request to login the new account
-        Auth::login($request);
-        //redirect
-        return redirect()->route('index');
+        // Register
+        $user = User::create($fields);
+
+        // Login
+        Auth::login($user);
+
+        event(new Registered($user));
+
+        if ($request->subscribe) {
+          //  event(new UserSubscribed($user));
+        }
+
+        // Redirect
+        return redirect()->route('dashboard');
     }
-    /* login code using email */
-    public function login(Request $request) 
-    {
 
-        //validate the data/request array
+    // Verify Email Notice Handler
+    public function verifyEmailNotice()
+    {
+        return view('auth.verify-email');
+    }
+
+    // Email Verification Handler
+    public function verifyEmailHandler(EmailVerificationRequest $request)
+    {
+        $request->fulfill();
+
+        return redirect()->route('dashboard');
+    }
+
+    // Resending the Verification Email Handler
+    public function verifyEmailResend(Request $request)
+    {
+        $request->user()->sendEmailVerificationNotification();
+
+        return back()->with('message', 'Verification link sent!');
+    }
+
+    // Login User
+    public function login(Request $request)
+    {
+        // Validate
         $fields = $request->validate([
             'email' => ['required', 'max:255', 'email'],
-            'password' => ['required', 'min:3']
+            'password' => ['required']
         ]);
 
-        //login the account if it pass
+        // Try to login the user
         if (Auth::attempt($fields, $request->remember)) {
-            return redirect()->intended('dashboard'); //intended defaults is '/' or root
+            return redirect()->intended('dashboard');
         } else {
             return back()->withErrors([
-                'failed' => 'login failed credential dont match on our records'
+                'failed' => 'The provided credentials do not match our records.'
             ]);
         }
     }
-    /* logout */
-    public function logout(Request $request){
-       //logout user
+
+    // Logout User
+    public function logout(Request $request)
+    {
+        // Logout the user
         Auth::logout();
-        //invalidate current session
+
+        // Invalidate user's session
         $request->session()->invalidate();
-        // regenerate new csrf token
+
+        // Regenerate CSRF token
         $request->session()->regenerateToken();
-        //redirect to home
-        return redirect()->route('index');
+
+        // Redirect to home
+        return redirect('/');
     }
 }

@@ -20,7 +20,7 @@ class PostController extends Controller Implements HasMiddleware //add implement
     public static function middleware() //add static or will not work and its an array
     {
         return [
-            new Middleware('auth',except:['show','index']), //all of the other route except show and route are auth check
+            new Middleware(['auth','verified'],except:['show','index']), //all of the other route except show and route are auth check
         ];
     }
 
