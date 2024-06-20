@@ -1,0 +1,22 @@
+npm run build 
+//use this to build the css and js  manifest json file
+
+copy files to server not on directly on http folder
+public laravel folder move or copy to http folder
+demo_files = where all files located
+demo2.namename.something is the locaiton where public files must be placed
+in the public directory delete manifest file and laravel delete all and leave manifest
+in the public directory open index.php and change the file locaiton 
+/../storage/framework/maintenance to
+/../uploadfolder name/storage/framework/maintenance.php 
+same for vender and bootstrap
+save and run terminal
+do migration if in production it will do a warning
+then re link storage 
+ln -s $home/uploadfolder name/storage/app/public $home/demo2.sitename.something/storage
+//$home is the root 
+
+if having issues turn env debug to true to see error message
+and run 
+php artisan config:clear
+php artisan config:cache

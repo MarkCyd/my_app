@@ -1,8 +1,12 @@
 <x-layout>
     <div class="mx-auto max-w-screen-sm card bg-gray-200 p-10 rounded-lg mt-4">
-        <h1 class="title">Welcome Back</h1>
+        <h1 class="title">Login your Account</h1>
 
-
+        @if(session('status'))
+        <div >
+            <x-flashMSG msg="{{ session('status') }}"/>{{-- just add a bg="any bg color you like in an if else statement to change bg colro" --}}
+        </div>
+        @endif
         <form action="{{ route('login') }}" method="post">
             @csrf
             {{-- email --}}
@@ -23,9 +27,12 @@
                 @enderror
             </div>
             {{-- remember me song --}}
-            <div class="flex mb-6 gap-2">
-                <input type="checkbox" name="remember" id="remember">
-                <label for="rememberme">Remember Me</label>
+            <div class="flex mb-6 justify-between items-center">
+                <div class="flex gap-3 py-1">
+                  <input type="checkbox" name="remember" id="remember">
+                  <label for="rememberme">Remember Me</label>
+                </div>   
+                     <a class="text-blue-500"href="{{ route('password.request') }}">forgot your password?</a>
 
             </div>
             @error('failed')
